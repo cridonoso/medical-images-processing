@@ -1,0 +1,10 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Descripci\363n del Problema}{}% 2
+\BOOKMARK [1][-]{section.3}{Soluci\363n Propuesta}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Lectura de la Imagen y Detecci\363n del Tumor}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Aplicaci\363n de K-means}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Erosi\363n y Dilataci\363n}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{Pintando el tumor en todas las dimensiones}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.5}{Indicadores aproximados del tumor}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{Conclusi\363n}{}% 9
+\BOOKMARK [1][-]{section*.1}{References}{}% 10
