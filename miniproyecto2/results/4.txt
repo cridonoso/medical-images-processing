@@ -1,3 +1,0 @@
-Sorensen-Dice for whole brain: 0.934345151618
-Sorensen-Dice for left side: 0.960107747563
-Sorensen-Dice for right side: 0.959589924211
