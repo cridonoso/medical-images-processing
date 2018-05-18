@@ -1,2 +1,2 @@
-# tumor_detection
-Tumor detectioon on nifti image using kmeans, erotion, dilation and masking
+# PROCESSING OF MEDICAL IMAGES
+This repository contains some projects that address principal topics in the field of images processing. *All code is running on python*.
