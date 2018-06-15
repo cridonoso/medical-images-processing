@@ -3,8 +3,10 @@ from read_write_bundles import *
 import numpy as np
 from time import time
 from scipy.spatial import distance
-#For parallel
-import multiprocess as mp
+#to save vectors
+import pickle
+import os
+
 
 
 def calculate_distance(*args):
@@ -22,43 +24,60 @@ def calculate_distance(*args):
 
 
 if __name__ == '__main__':
-    path = 'atlas_faisceaux_MNI/atlas_AR_ANT_LEFT_MNI.bundles'
-    path2 = 'whole_brain_MNI_100k_21p.bundles'
-    whole_brain = read_bundle(path2)
-    object_ = read_bundle(path)
+
+    rootdir = './atlas_faisceaux_MNI'
+    extensions = ('.bundles')
+    t00 = time()
+    for subdir, dirs, files in os.walk(rootdir):
+        for file in files:
+            ext = os.path.splitext(file)[-1].lower()
+            if ext in extensions:
+                print 'reading',file,'...'
+                part= file
+                path = 'atlas_faisceaux_MNI/'+part
+                path2 = 'whole_brain_MNI_100k_21p.bundles'
+                whole_brain = read_bundle(path2)
+                object_ = read_bundle(path)
 
 
-    parallel = False
-    max_num = 10000
-    whole_brain = whole_brain[0:max_num]
-    print 'object: ',len(object_)
-    print 'whole_brain: ', len(whole_brain)
-    if not parallel:
-        print 'Running with Simple Computing'
-        t0 = time()
-        distances_new = []
-        for o in object_:
-            for w in whole_brain:
-                dist, save = calculate_distance((o,w[::-1],9))
-                if save:
-                    distances_new.append(dist[1])
-                    print dist[1]
+                max_num = 10000
+                whole_brain = whole_brain[0:max_num]
+                print 'object: ',len(object_)
+                print 'whole_brain: ', len(whole_brain)
+
+                t0 = time()
+                distances_new = []
+                indexes = []
+                for o in object_:
+                    for ind, (w) in enumerate(whole_brain):
+                        dist, save = calculate_distance((o,w[::-1],9))
+                        dist2, save2 = calculate_distance((o, w, 9))
+                        if save and save2:
+                            t = (dist[0],dist2[0])
+                            to = (dist[1],dist2[1])
+                            m = np.argmin(t)
+                            distances_new.append(to[m])
+                            indexes.append(ind)
+                            #print 'both: ',to[m]
+                        else:
+                            if save:
+                                distances_new.append(dist[1])
+                                indexes.append(ind)
+                                #print 'inverse: ',dist[1]
+                            if save2:
+                                distances_new.append(dist2[1])
+                                indexes.append(ind)
+                                #print 'normal',dist2[1]
 
 
-        t1 = time()
-        print ('Algorithms takes %f' %(t1-t0))
-    else:
-        print 'Running in Parallel Computing'
-        p = mp.Pool()
-        t0 = time()
-        input = [(o, w[::-1], 9) for o in object_ for w in whole_brain]
-        results = p.map(calculate_distance, input)
-        p.close()
-        p.join()
-
-        for r in results:
-            if r[1]:
-                print r[0]
-
-        t1 = time()
-        print ('Algorithms takes %f' %(t1-t0))
+                t1 = time()
+                print part,'takes %f' %(t1-t0)
+                name = './saved/'+str(part)+'.pkl'
+                with open(name, 'wb') as f:
+                    pickle.dump(distances_new, f)
+                name2 = './saved/'+str(part)+'_indexex.pkl'
+                with open(name2, 'wb') as f:
+                    pickle.dump(indexes, f)
+                print '='*50
+    t11 = time()
+    print ('Algorithms takes %f' % (t1 - t0))
